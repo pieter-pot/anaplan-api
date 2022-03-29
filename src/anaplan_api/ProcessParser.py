@@ -7,7 +7,7 @@ import re
 import pandas as pd
 from distutils.util import strtobool
 from typing import List
-from anaplan_api import anaplan
+from ..anaplan_api import anaplan
 from .AnaplanConnection import AnaplanConnection
 from .Parser import Parser
 from .ParserResponse import ParserResponse

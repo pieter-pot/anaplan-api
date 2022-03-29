@@ -6,11 +6,11 @@
 # Input:		Java Keystore
 # Output:		Key pair as array of strings
 # ==============================================================================
-from anaplan_api import jks
+# from anaplan_api import jks
 import logging
 from base64 import b64encode
-from anaplan_api.jks.util import BadKeystoreFormatException, UnsupportedKeystoreVersionException,\
-	KeystoreSignatureException, DuplicateAliasException, DecryptionFailureException, UnexpectedAlgorithmException
+# from anaplan_api.jks.util import BadKeystoreFormatException, UnsupportedKeystoreVersionException,\
+# 	KeystoreSignatureException, DuplicateAliasException, DecryptionFailureException, UnexpectedAlgorithmException
 
 logger = logging.getLogger(__name__)
 
