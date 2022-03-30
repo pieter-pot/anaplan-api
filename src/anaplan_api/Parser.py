@@ -72,8 +72,7 @@ class Parser(object):
 						logger.error(f"The task has failed to run due to an error: {error_message}")
 						return ParserResponse(f"The task has failed to run due to an error: {error_message}", "", False, pd.DataFrame())
 
-	@staticmethod
-	def get_dump(url: str) -> DataFrame:
+	def get_dump(self, url: str) -> DataFrame:
 		"""Fetches the failure dump of an Anaplan Import action if available
 
 		:param url: URL of the Anaplan failure dump
@@ -90,7 +89,7 @@ class Parser(object):
 		:return: Failure dump for an import action
 		:rtype: DataFrame
 		"""
-		authorization = Parser._authorization
+		authorization = self._authorization
 
 		post_header = {
 			'Authorization': authorization,
@@ -102,7 +101,7 @@ class Parser(object):
 
 		try:
 			logger.debug("Fetching error dump")
-			dump = requests.get(''.join([url, "/dump"]), headers=post_header, timeout=(5, 30)).text
+			dump = requests.get(''.join([url]), headers=post_header, timeout=(5, 30)).text
 			logger.debug("Error dump downloaded.")
 		except (HTTPError, ConnectionError, SSLError, Timeout, ConnectTimeout, ReadTimeout) as e:
 			logger.error(f"Error fetching error dump {e}", exc_info=True)

@@ -23,14 +23,13 @@ class ProcessParser(Parser):
         super().__init__(conn=conn, results=results, url=url)
         ProcessParser.results = ProcessParser.parse_response(conn, results, url).copy()
 
-    @staticmethod
-    def get_results() -> List[ParserResponse]:
+    def get_results(self) -> List[ParserResponse]:
         """Get task results
 
         :return: Process task results
         :rtype: List[ParserResponse]
         """
-        return ProcessParser.results
+        return self.results
 
     @staticmethod
     def parse_response(conn: AnaplanConnection, results: dict, url: str) -> List[ParserResponse]:
@@ -57,7 +56,7 @@ class ProcessParser(Parser):
             logger.info("Process completed.")
             # nestedResults key only present in process task results
             if 'nestedResults' in results['result']:
-                nested_details = [ParserResponse]
+                nested_details = []
 
                 logger.debug("Parsing nested results.")
                 for nestedResults in results['result']['nestedResults']:
@@ -67,6 +66,8 @@ class ProcessParser(Parser):
                     nested_details.append(ProcessParser.sub_process_parser(conn, object_id, nestedResults, url))
 
                 return nested_details
+
+            return []
 
     @staticmethod
     def sub_process_parser(conn: AnaplanConnection, object_id: str, results: dict, url: str) -> ParserResponse:
@@ -96,7 +97,7 @@ class ProcessParser(Parser):
         successful = results['successful']  # Sub-task successful status
 
         if failure_dump:
-            edf = super().get_dump(''.join([url, '/dumps/', object_id]))
+            edf = Parser(conn, results, url).get_dump(''.join([url, '/dumps/', object_id]))
 
         if 'details' in results:
             for i in range(0, len(results['details'])):
@@ -117,5 +118,5 @@ class ProcessParser(Parser):
                     if results['details'][i]['type'] == "exportSucceeded":
                         export_file = anaplan.get_file(conn, object_id)
 
-        logger.debug(f"Error dump available: {failure_dump}, Sub-task {object_id} successful: {successful}")
+        logger.info(f"Error dump available: {failure_dump}, Sub-task {object_id} successful: {successful}")
         return ParserResponse('\n'.join(msg), export_file, failure_dump, edf)
